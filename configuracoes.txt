@@ -1,0 +1,47 @@
+1º Criar uma engine para conexão com banco de dados
+engine = create_engine('sqlite:///sqlite.db')
+
+2º Informar ao banco para criar todas as tabelas, os METADADOS, quem faz isso é o registry
+Informa que existe metadados dentro o registro do banco
+Nesse ponto ele cria o arquivo sqlite
+table_regitry.metadata.create_all(engine)
+
+3º Criar uma Session
+with Session(engine) as session:
+        user = User(
+            username='luiz', 
+            email='test@test.com', 
+            password='testpasswrod',
+        )
+
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+
+
+Migrações
+
+    Para criar uma migração para banco de dados evolutivo usamos o alembic
+
+1º poetry add alembic
+2º inicilizamos o alembic
+    alembic init migrations
+
+3º Precisamos importar o settings que contém as variáveis de ambiente,
+    especificadamente DATABASE_URL que contém o endereço do banco de dados.
+    
+    from fast_zero.settings import Settings 
+    abaixo da config = context.config, adicionamos 
+    config.set_main_option('sqlalchemy.url', Settings().DATABASE_URL)
+
+    
+4º Precisamos trazer os nossos metadata de modelo para poder gerar a migração,
+    e isso é feito trazendo o table_registry criado em models.py para dentro de 
+    migrations/env.py, e alterando o target_metadata = None, ficando assim
+    target_metadata = table_registry.metadata
+
+Gerando a migração equivalente ao makemigrate
+    alembic revision --autogenerate -m "create users table"
+
+Aplicando a migração equivalente ao migrate
+    alembic upgrad head
