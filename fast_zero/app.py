@@ -1,14 +1,12 @@
-# Importando da biblioteca fastapi do objeto FastAPI
+from http import HTTPStatus
+
 from fastapi import FastAPI
 
-# Iniciando uma aplicação FastAPI
+from fast_zero.schemas import Message
+
 app = FastAPI()
 
 
-# Definindo um endpoint com o endereço / acessível pelo método HTTP GET
-@app.get('/')
+@app.get('/', status_code=HTTPStatus.OK, response_model=Message)
 def read_root():
-    # Função que será executada quando o endereço / for acessado por um cliente
-
-    # Os dados que serão retornados pelo endereço quando for chamado
     return {'message': 'olá Mundo!'}
