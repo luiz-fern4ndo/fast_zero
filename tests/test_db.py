@@ -13,9 +13,7 @@ def test_create_user(session):
     session.commit()
     # session.refresh(user)
 
-    result = session.scalar(
-        select(User).where(User.email == 'test@test.com')
-    )
+    result = session.scalar(select(User).where(User.email == 'test@test.com'))
 
     assert result.id == 1
     assert result.username == 'test'
